@@ -27,11 +27,8 @@ EXAMPLE STRUCTURE OF THE DATA STORED:
 
 import hashlib
 from datetime import datetime, timezone
-from .local_data_store import LocalDataStore
-
-######################################
-DB_INSTANCE_POOL = LocalDataStore()  # // GLOBAL
-######################################
+from config.config import DB_INSTANCE_POOL
+from fastapi import HTTPException, status
 
 """
     A utility class for handling and analyzing valid strings.
@@ -73,8 +70,15 @@ class StringFactory:
             },
             "created_at": str(iso_8601_utc_time)
         }
-        DB_INSTANCE_POOL.commit_to_db(generated_hash, payload)
-        return payload
+        save_status = DB_INSTANCE_POOL.commit_to_db(generated_hash, payload)
+        if save_status is not True:
+            return payload
+        else:
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail="String already exists in the system"
+            )
+            
       
 #################################################
 # @length_of_string: calculates the length of   #
@@ -150,6 +154,7 @@ class StringFactory:
         # and return its hexadecimal representation.
         return hashlib.sha256(byte_string).hexdigest()
 
+    
 
   
 ####################################################

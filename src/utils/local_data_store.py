@@ -10,15 +10,26 @@ class LocalDataStore:
         self.db = {}
     
     def commit_to_db(self, hash_string:str, payload):
-        if hash_string not in self.db:
+        if hash_string in self.db:
+            return True
+        else:
             self.db[hash_string] = payload
-        # check for when the key exists
-        print(f"In LocalDB {self.db.get(hash_string)}")
+            return False
 
 
 
 
-    def delete_from_db(self, hash_string:str):
-        pass
-    def retrieve_from_db(self, hash_string:str):
-        pass
+    async def delete_from_db(self, hash_string:str) -> bool:
+        if hash_string in self.db:
+            del self.db[hash_string]
+            return True
+        else:
+            return False
+
+
+    async def retrieve_from_db(self, hash_string:str):
+        if hash_string in self.db:
+            return self.db.get(hash_string)
+        else:
+            return None
+
