@@ -32,4 +32,7 @@ class LocalDataStore:
             return self.db.get(hash_string)
         else:
             return None
+    
+    async def get_all_db_content(self):
+        return self.db
 

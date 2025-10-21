@@ -1,13 +1,15 @@
-from fastapi import FastAPI, HTTPException, status
+from fastapi import FastAPI, Request, HTTPException, status
 from datetime import datetime, timezone
 import httpx
 from models.string_model import StringPayload
-from controllers.create_string import create_and_save_string, get_payload_by_id, delete_payload_by_id
-from pydantic import BaseModel, ValidationError
-
-
+from utils.query_validator import get_validated_filters
+from controllers.create_string import create_and_save_string, get_payload_by_id, delete_payload_by_id, get_by_query
+from fastapi.responses import JSONResponse
+from pydantic import BaseModel, field_validator, ValidationError
+from typing import Optional
+import json
+import ast
 app = FastAPI()
-
 
 
 @app.get('/')
@@ -36,6 +38,26 @@ async def get_string(string_value:str):
             detail="String does not exist in the system"
         )
     return fetched_payload
+
+
+
+@app.get('/strings')
+async def query_string(is_palindrome, min_length, max_length, word_count, contains_character):
+    if len(is_palindrome) == 0 or len(min_length) == 0  or len(max_length) == 0 or len(word_count) == 0 or len(contains_character) == 0:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid query parameters"
+        )
+    
+    str_json = f'{{"is_palindrome": {is_palindrome}, "min_length": {min_length}, "max_length": {max_length}, "word_count": {word_count}, "contains_character": "{contains_character}"}}'
+
+
+    dict_json = json.loads(str_json)
+    print(dict_json)
+    is_palindrome, min_length, max_length, word_count, contains_character = dict_json.values()
+    valid_query = get_validated_filters(is_palindrome, min_length, max_length, word_count, contains_character)
+    return valid_query
+
 
 @app.delete('/strings/{string_value}', status_code=204)
 async def delete_string(string_value:str):

@@ -13,6 +13,11 @@ async def get_payload_by_id(string_value:str)->dict | None:
     found_payload = await DB_INSTANCE_POOL.retrieve_from_db(generated_hash)
     return found_payload
 
+async def get_by_query(is_palindrome, min_length, max_length, word_count, contains_character):
+    matching_payload = []
+    ret_db = await DB_INSTANCE_POOL.get_all_db_content()
+    print(ret_db)
+    
 async def delete_payload_by_id(string_value:str)-> bool:
     string_factory_instance = StringFactory(string_value)
     generated_hash = string_factory_instance.sha256_hash()

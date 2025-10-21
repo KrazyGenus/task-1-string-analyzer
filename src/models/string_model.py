@@ -1,7 +1,6 @@
 from fastapi import FastAPI, HTTPException, status
 from pydantic import BaseModel, ValidationError
 
-app = FastAPI()
 
 class StringPayload(BaseModel):
     value: str
