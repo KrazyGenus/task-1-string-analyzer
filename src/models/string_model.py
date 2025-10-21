@@ -1,6 +1,13 @@
 from fastapi import FastAPI, HTTPException, status
 from pydantic import BaseModel, ValidationError
 
+###########################################################################################
+# Represents a payload containing a string value.                                         #
+# Provides a method to validate the existence of the string value.                        #
+#                                                                                         #
+# Methods:                                                                                #
+#     validate_existence(value: str): Validates that the string is not empty or blank.    #
+###########################################################################################
 
 class StringPayload(BaseModel):
     value: str
