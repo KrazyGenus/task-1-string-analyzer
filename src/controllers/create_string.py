@@ -14,13 +14,15 @@ async def get_payload_by_id(string_value:str)->dict | None:
     return found_payload
 
 
-async def get_by_query(is_palindrome, min_length, max_length, word_count, contains_character):
+async def get_by_query(is_palindrome:bool, min_length:int, max_length:int, word_count:int, contains_character:str):
     matching_payload = []
     ret_db = await DB_INSTANCE_POOL.get_all_db_content()
-    
+    print(is_palindrome, min_length, max_length, word_count, contains_character)
     # Iterate over the dictionaries (values) in the database result
     for doc in ret_db.values():
+        print(doc.get('value'))
         properties = doc.get('properties', {})
+        value = doc.get('value', '')
         
         
         filters = [
@@ -34,7 +36,7 @@ async def get_by_query(is_palindrome, min_length, max_length, word_count, contai
             properties.get('word_count', 0) == word_count,
             
            
-            contains_character in properties.get('value', '') 
+            contains_character in doc.get('value') 
         ]
         
         
