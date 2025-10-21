@@ -51,12 +51,11 @@ async def query_string(is_palindrome, min_length, max_length, word_count, contai
     
     str_json = f'{{"is_palindrome": {is_palindrome}, "min_length": {min_length}, "max_length": {max_length}, "word_count": {word_count}, "contains_character": "{contains_character}"}}'
 
-
     dict_json = json.loads(str_json)
-    print(dict_json)
     is_palindrome, min_length, max_length, word_count, contains_character = dict_json.values()
-    valid_query = get_validated_filters(is_palindrome, min_length, max_length, word_count, contains_character)
-    return valid_query
+    get_validated_filters(is_palindrome, min_length, max_length, word_count, contains_character)
+    query_results = await get_by_query(is_palindrome, min_length, max_length, word_count, contains_character)
+    return query_results
 
 
 @app.delete('/strings/{string_value}', status_code=204)
