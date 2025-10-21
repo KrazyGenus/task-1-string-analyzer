@@ -24,6 +24,9 @@ RUN uv sync --frozen --no-dev --no-install-project
 # Copy the rest of your application code
 COPY . .
 
+# Install your project in development mode
+RUN uv run pip install -e .
+
 # Expose the port that your app will run on
 EXPOSE 8000
 
