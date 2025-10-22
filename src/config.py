@@ -1,4 +1,4 @@
-from local_data_store import LocalDataStore
+from .local_data_store import LocalDataStore
 
 #############################################
 # Local database instance Global in scope   #

@@ -1,8 +1,8 @@
 from fastapi import FastAPI, Request, HTTPException, status
 import httpx
-from string_model import StringPayload
-from query_validator import get_validated_filters
-from create_string import create_and_save_string, get_payload_by_id, delete_payload_by_id, get_by_query
+from src.string_model import StringPayload
+from src.query_validator import get_validated_filters
+from src.create_string import create_and_save_string, get_payload_by_id, delete_payload_by_id, get_by_query
 from pydantic import ValidationError
 import json
 

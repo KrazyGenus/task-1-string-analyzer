@@ -1,6 +1,6 @@
-from string_factory import StringFactory
-from string_model import StringPayload
-from config import DB_INSTANCE_POOL
+from .string_factory import StringFactory
+from .string_model import StringPayload
+from .config import DB_INSTANCE_POOL
 
 
 
