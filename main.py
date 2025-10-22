@@ -121,7 +121,13 @@ async def query_string(request: Request):
         # Validate and process the parameters
         #converted_payload_dict = get_validated_filters(param_dict)
         query_results = await get_by_query(param_dict)
-        return query_results
+        response = {
+            "data": query_results,
+            "count": len(query_results),
+            "filters_applied": param_dict,
+        }
+
+        return response
     except (ValueError, TypeError):
          raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
