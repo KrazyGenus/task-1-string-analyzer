@@ -5,6 +5,8 @@ from src.query_validator import get_validated_filters
 from src.create_string import create_and_save_string, get_payload_by_id, delete_payload_by_id, get_by_query
 from pydantic import ValidationError
 import json
+from typing import Optional
+import ast
 
 app = FastAPI()
 
@@ -66,7 +68,6 @@ async def get_string(string_value: str):
 
 
 
-@app.get('/strings')
 ###########################################################################################
 # Queries strings based on various filters such as palindrome status, length, word count, #
 # and character containment.                                                              #
@@ -81,19 +82,25 @@ async def get_string(string_value: str):
 # Returns:                                                                                #
 #     List[Dict]: A list of dictionaries containing the query results.                    #
 ###########################################################################################
-async def query_string(is_palindrome, min_length, max_length, word_count, contains_character):
-    if len(is_palindrome) == 0 or len(min_length) == 0  or len(max_length) == 0 or len(word_count) == 0 or len(contains_character) == 0:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Invalid query parameters"
-        )
-    
-    str_json = f'{{"is_palindrome": {is_palindrome}, "min_length": {min_length}, "max_length": {max_length}, "word_count": {word_count}, "contains_character": "{contains_character}"}}'
+@app.get('/strings') 
+async def query_string(request: Request):
+    # Validate query parameters if provided
+    param_dict = dict(request.query_params)
+    # Convert single quotes to double quotes in the string representation of the dictionary
+    # if any(param is not None and len(param) == 0 for param in [is_palindrome, min_length, max_length, word_count, contains_character]):
+    #     raise HTTPException(
+    #         status_code=status.HTTP_400_BAD_REQUEST,
+    #         detail="Invalid query parameters"
+    #     )
+                        
+    # str_json = f'{param_dict}'
+    str_param_dict = json.dumps(param_dict)
+    dict_json = json.loads(str_param_dict)
+    print(dict_json)
 
-    dict_json = json.loads(str_json)
-    is_palindrome, min_length, max_length, word_count, contains_character = dict_json.values()
-    get_validated_filters(is_palindrome, min_length, max_length, word_count, contains_character)
-    query_results = await get_by_query(is_palindrome, min_length, max_length, word_count, contains_character)
+    converted_payload_dict = get_validated_filters(dict_json)
+    print(converted_payload_dict)
+    query_results = await get_by_query(converted_payload_dict)
     return query_results
 
 

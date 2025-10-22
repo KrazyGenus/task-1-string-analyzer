@@ -51,29 +51,35 @@ async def get_payload_by_id(string_value: str) -> dict | None:
 # Returns:                                                                                #
 #     list: A list of matching payloads as dictionaries.                                  #  
 ###########################################################################################
-async def get_by_query(is_palindrome: bool, min_length: int, max_length: int, word_count: int, contains_character: str):
+async def get_by_query(converted_payload_dict):
     matching_payload = []
     ret_db = await DB_INSTANCE_POOL.get_all_db_content()
-    print(is_palindrome, min_length, max_length, word_count, contains_character)
+
     # Iterate over the dictionaries (values) in the database result
     for doc in ret_db.values():
-        print(doc.get('value'))
-        properties = doc.get('properties', {})
         value = doc.get('value', '')
+        properties = doc.get('properties', {})
 
+        # Safely retrieve filter values with defaults
+        is_palindrome = properties.get('is_palindrome')
+        length = properties.get('length', 0)
+        word_count = properties.get('word_count', 0)
+        contains_character = converted_payload_dict.get('contains_character', '')
+
+        # Apply filters
         filters = [
-            properties.get('is_palindrome') == is_palindrome,
-            properties.get('length', 0) >= min_length,
-            properties.get('length', float('inf')) <= max_length,
-            properties.get('word_count', 0) == word_count,
-            contains_character in doc.get('value')
+            is_palindrome == converted_payload_dict.get('is_palindrome'),
+            length >= converted_payload_dict.get('min_length', 0),
+            length <= converted_payload_dict.get('max_length', float('inf')),
+            word_count == converted_payload_dict.get('word_count', word_count),
+            contains_character in value if contains_character else True
         ]
 
+        # Check if all filters pass
         if all(filters):
             matching_payload.append(doc)
 
     return matching_payload
-
 
 ###########################################################################################
 # Deletes a payload from the database by its string value.                                #
