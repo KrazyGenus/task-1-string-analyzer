@@ -68,15 +68,15 @@ async def get_by_query(converted_payload_dict):
 
         # Apply filters
         filters = [
-            is_palindrome == converted_payload_dict.get('is_palindrome'),
-            length >= converted_payload_dict.get('min_length'),
-            length <= converted_payload_dict.get('max_length', float('inf')),
-            word_count == converted_payload_dict.get('word_count', word_count),
-            contains_character in value if contains_character else True
+            is_palindrome == converted_payload_dict['is_palindrome'] if 'is_palindrome' in converted_payload_dict else False,
+            length >= converted_payload_dict['min_length'] if 'min_length' in converted_payload_dict else False,
+            length <= converted_payload_dict['max_length'] if 'max_length' in converted_payload_dict else False,
+            word_count == converted_payload_dict['word_count'] if 'word_count' in converted_payload_dict else False,
+            contains_character in value if 'contains_character' in converted_payload_dict else False
         ]
 
-        # Check if all filters pass
-        if all(filters):
+        # Check if at least one filter passes
+        if any(filters):
             matching_payload.append(doc)
 
     return matching_payload
