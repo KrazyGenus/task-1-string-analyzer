@@ -27,7 +27,7 @@ EXAMPLE STRUCTURE OF THE DATA STORED:
 
 import hashlib
 from datetime import datetime, timezone
-from config.config import DB_INSTANCE_POOL
+from config import DB_INSTANCE_POOL
 from fastapi import HTTPException, status
 
 """
