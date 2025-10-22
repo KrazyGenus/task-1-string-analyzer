@@ -82,29 +82,31 @@ async def get_string(string_value: str):
 # Returns:                                                                                #
 #     List[Dict]: A list of dictionaries containing the query results.                    #
 ###########################################################################################
-@app.get('/strings') 
-async def query_string(request: Request, status_code=200):
-    # Manually extract and validate query parameters
+
+@app.get('/strings')
+async def query_string(request: Request):
+    # Extract query parameters from the request
+    query_params = request.query_params
     param_dict = {}
 
-    # Extract and validate each query parameter
-    is_palindrome = request.query_params.get('is_palindrome')
+    # Manually extract and validate each query parameter
+    is_palindrome = query_params.get('is_palindrome')
     if is_palindrome is not None:
         param_dict['is_palindrome'] = is_palindrome.lower() == 'true'
 
-    min_length = request.query_params.get('min_length')
+    min_length = query_params.get('min_length')
     if min_length is not None:
         param_dict['min_length'] = int(min_length)
 
-    max_length = request.query_params.get('max_length')
+    max_length = query_params.get('max_length')
     if max_length is not None:
         param_dict['max_length'] = int(max_length)
 
-    word_count = request.query_params.get('word_count')
+    word_count = query_params.get('word_count')
     if word_count is not None:
         param_dict['word_count'] = int(word_count)
 
-    contains_character = request.query_params.get('contains_character')
+    contains_character = query_params.get('contains_character')
     if contains_character is not None:
         if len(contains_character) == 1:
             param_dict['contains_character'] = contains_character
@@ -118,7 +120,6 @@ async def query_string(request: Request, status_code=200):
     converted_payload_dict = get_validated_filters(param_dict)
     query_results = await get_by_query(converted_payload_dict)
     return query_results
-
 
 @app.delete('/strings/{string_value}', status_code=204)
 ###########################################################################################
