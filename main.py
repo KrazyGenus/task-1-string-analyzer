@@ -90,36 +90,43 @@ async def query_string(request: Request):
     param_dict = {}
 
     # Manually extract and validate each query parameter
-    is_palindrome = query_params.get('is_palindrome')
-    if is_palindrome is not None:
-        param_dict['is_palindrome'] = is_palindrome.lower() == 'true'
+    try:
+        
+        is_palindrome = query_params.get('is_palindrome')
+        if is_palindrome is not None:
+            param_dict['is_palindrome'] = is_palindrome.lower() == 'true'
 
-    min_length = query_params.get('min_length')
-    if min_length is not None:
-        param_dict['min_length'] = int(min_length)
+        min_length = query_params.get('min_length')
+        if min_length is not None:
+            param_dict['min_length'] = int(min_length)
 
-    max_length = query_params.get('max_length')
-    if max_length is not None:
-        param_dict['max_length'] = int(max_length)
+        max_length = query_params.get('max_length')
+        if max_length is not None:
+            param_dict['max_length'] = int(max_length)
 
-    word_count = query_params.get('word_count')
-    if word_count is not None:
-        param_dict['word_count'] = int(word_count)
+        word_count = query_params.get('word_count')
+        if word_count is not None:
+            param_dict['word_count'] = int(word_count)
 
-    contains_character = query_params.get('contains_character')
-    if contains_character is not None:
-        if len(contains_character) == 1:
-            param_dict['contains_character'] = contains_character
-        else:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="'contains_character' must be a single character"
-            )
+        contains_character = query_params.get('contains_character')
+        if contains_character is not None:
+            if len(contains_character) == 1:
+                param_dict['contains_character'] = contains_character
+            else:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="Invalid query parameters"
+                )
 
-    # Validate and process the parameters
-    converted_payload_dict = get_validated_filters(param_dict)
-    query_results = await get_by_query(converted_payload_dict)
-    return query_results
+        # Validate and process the parameters
+        #converted_payload_dict = get_validated_filters(param_dict)
+        query_results = await get_by_query(param_dict)
+        return query_results
+    except (ValueError, TypeError):
+         raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="Invalid query parameters"
+                )
 
 @app.delete('/strings/{string_value}', status_code=204)
 ###########################################################################################
