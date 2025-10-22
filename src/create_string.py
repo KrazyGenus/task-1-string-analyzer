@@ -62,14 +62,14 @@ async def get_by_query(converted_payload_dict):
 
         # Safely retrieve filter values with defaults
         is_palindrome = properties.get('is_palindrome')
-        length = properties.get('length', 0)
-        word_count = properties.get('word_count', 0)
+        length = properties.get('length')
+        word_count = properties.get('word_count')
         contains_character = converted_payload_dict.get('contains_character', '')
 
         # Apply filters
         filters = [
             is_palindrome == converted_payload_dict.get('is_palindrome'),
-            length >= converted_payload_dict.get('min_length', 0),
+            length >= converted_payload_dict.get('min_length'),
             length <= converted_payload_dict.get('max_length', float('inf')),
             word_count == converted_payload_dict.get('word_count', word_count),
             contains_character in value if contains_character else True

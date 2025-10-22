@@ -86,14 +86,6 @@ async def get_string(string_value: str):
 async def query_string(request: Request):
     # Validate query parameters if provided
     param_dict = dict(request.query_params)
-    # Convert single quotes to double quotes in the string representation of the dictionary
-    # if any(param is not None and len(param) == 0 for param in [is_palindrome, min_length, max_length, word_count, contains_character]):
-    #     raise HTTPException(
-    #         status_code=status.HTTP_400_BAD_REQUEST,
-    #         detail="Invalid query parameters"
-    #     )
-                        
-    # str_json = f'{param_dict}'
     str_param_dict = json.dumps(param_dict)
     dict_json = json.loads(str_param_dict)
     print(dict_json)
